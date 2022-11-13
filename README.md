@@ -1,6 +1,6 @@
 <h1>Список дел</h1>
 
-Приложение разработал на "чистом" JavaScript (Vannila.js) с использованием декларативного подхода.
+Приложение <a href="https://vitaliy-tsyganok.github.io/todo-app/" target="_blank">Todo App</a> разработал на "чистом" JavaScript (Vannila.js) с использованием декларативного подхода.
 
 <h2>История версий</h1>
 
