@@ -13,11 +13,16 @@
 	<body>
 		<div id="root">
 			<h1>Todo app</h1>
-			<div id="addTodo">
-				<input type="text" placeholder="New todo" />
-				<button>Add todo</button>
+			<div class="addTodo">
+				<input class="addTodo__input" type="text" placeholder="New todo" />
+				<button class="addTodo__button button">Add todo</button>
 			</div>
-			<ul id="todoList"></ul>
+			<div class="actions">
+				<button class="actions__downloadTasks button">Download tasks</button>
+				<button class="actions__clearDone button">Clear done</button>
+				<button class="actions__clearAll button">Clear all</button>
+			</div>
+			<ul class="todoList"></ul>
 		</div>
 
 		<script src="js/app.js"></script>

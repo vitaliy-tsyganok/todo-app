@@ -1,17 +1,18 @@
+// Nodes
 const rootNode = document.querySelector('#root')
-const addTodoNode = document.querySelector('#addTodo')
-const todoListNode = document.querySelector('#todoList')
-
-const inputNode = addTodoNode.querySelector('input')
-const buttonNode = addTodoNode.querySelector('button')
+const todoListNode = document.querySelector('.todoList')
+const addTodoInputNode = document.querySelector('.addTodo__input')
+const addTodoButtonNode = document.querySelector('.addTodo__button')
 
 let todos = getToLocalStorage('todos') || []
 render()
 
-buttonNode.addEventListener('click', buttonNodeHandler)
-inputNode.addEventListener('keydown', keydownEnter)
+// Events
+addTodoButtonNode.addEventListener('click', addTodoButtonNodeHandler)
+addTodoInputNode.addEventListener('keydown', keydownEnter)
 
-function buttonNodeHandler() {
+// Handlers
+function addTodoButtonNodeHandler() {
 	addTodo(getTodoText())
 	render()
 	removeTodoText()
@@ -21,10 +22,11 @@ function buttonNodeHandler() {
 
 function keydownEnter(event) {
 	if (event.key === 'Enter') {
-		buttonNodeHandler()
+		addTodoButtonNodeHandler()
 	}
 }
 
+// Functions
 function saveToLocalStorage(key, object) {
 	localStorage.setItem(key, JSON.stringify(object))
 }
@@ -44,7 +46,6 @@ function addTodo(todoText) {
 		id: `${Math.random()}`,
 	}
 	todos = [...todos, todo]
-	// todos.push(todo)
 }
 
 function deleteTodo(elem) {
@@ -70,11 +71,11 @@ function getTodoId(elem) {
 }
 
 function getTodoText() {
-	return inputNode.value.trim()
+	return addTodoInputNode.value.trim()
 }
 
 function removeTodoText() {
-	inputNode.value = ''
+	addTodoInputNode.value = ''
 }
 
 function render() {
