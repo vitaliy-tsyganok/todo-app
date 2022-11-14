@@ -106,7 +106,7 @@ function downloadTasks() {
 	downloadTasksPromise()
 		.then(downloadedTodos => {
 			[...downloadedTodos] = downloadedTodos.map(todo => {
-				const { id, userId, completed: isDone, title: todoText, } = todo
+				const { completed: isDone, title: todoText, } = todo
 				return {
 					id: `${Math.random()}`,
 					isDone,
