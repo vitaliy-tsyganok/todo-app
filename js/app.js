@@ -101,3 +101,34 @@ function clearTodosDone() {
 	render()
 	saveToLocalStorage('todos', todos)
 }
+
+function downloadTasks() {
+	downloadTasksPromise()
+		.then(downloadedTodos => {
+			[...downloadedTodos] = downloadedTodos.map(todo => {
+				const { id, userId, completed: isDone, title: todoText, } = todo
+				return {
+					id: `${Math.random()}`,
+					isDone,
+					todoText,
+					todoBody: {
+						...todo
+					}
+				}
+			})
+			todos = [...todos, ...downloadedTodos]
+			console.log(downloadedTodos)
+			console.log(todos)
+			render()
+			saveToLocalStorage('todos', todos)
+		})
+}
+
+async function downloadTasksPromise() {
+	const data = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=7')
+	const downloadedTodos = await data.json()
+	return downloadedTodos
+}
+
+
+
