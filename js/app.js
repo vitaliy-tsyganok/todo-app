@@ -1,6 +1,4 @@
 // Nodes
-const rootNode = document.querySelector('#root')
-const todoListNode = document.querySelector('.todoList')
 const addTodoInputNode = document.querySelector('.addTodo__input')
 const addTodoButtonNode = document.querySelector('.addTodo__button')
 
@@ -27,6 +25,7 @@ function keydownEnter(event) {
 }
 
 // Functions
+// Local storage
 function saveToLocalStorage(key, object) {
 	localStorage.setItem(key, JSON.stringify(object))
 }
@@ -35,6 +34,17 @@ function getToLocalStorage(key) {
 	return JSON.parse(localStorage.getItem(key))
 }
 
+// Basic functions
+function render() {
+	let html = ''
+	todos.forEach((todo) => {
+		html += `<li class="${todo.isDone ? 'isDone' : ''}" data-id="${todo.id}"><div>${todo.todoText}</div>
+			<button onClick="setIsDone(this)">Done</button>
+			<button onClick="deleteTodo(this)">Delete</button>
+		</li>`
+	})
+	document.querySelector('.todoList').innerHTML = html
+}
 
 function addTodo(todoText) {
 	if (!todoText) {
@@ -78,13 +88,7 @@ function removeTodoText() {
 	addTodoInputNode.value = ''
 }
 
-function render() {
-	let html = ''
-	todos.forEach((todo) => {
-		html += `<li class="${todo.isDone ? 'isDone' : ''}" data-id="${todo.id}"><div>${todo.todoText}</div>
-			<button onClick="setIsDone(this)">Done</button>
-			<button onClick="deleteTodo(this)">Delete</button>
-		</li>`
-	})
-	todoListNode.innerHTML = html
+// Buttons action 
+function clearTodos(params) {
+	
 }
