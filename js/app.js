@@ -90,8 +90,14 @@ function removeTodoText() {
 }
 
 // Buttons action 
-function clearTodos() {
+function clearTodosAll() {
 	todos = []
+	render()
+	saveToLocalStorage('todos', todos)
+}
+
+function clearTodosDone() {
+	todos = todos.filter(todo => !todo.isDone)
 	render()
 	saveToLocalStorage('todos', todos)
 }
