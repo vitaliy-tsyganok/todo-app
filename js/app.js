@@ -9,6 +9,7 @@ render()
 addTodoButtonNode.addEventListener('click', addTodoButtonNodeHandler)
 addTodoInputNode.addEventListener('keydown', keydownEnter)
 
+
 // Handlers
 function addTodoButtonNodeHandler() {
 	addTodo(getTodoText())
@@ -89,6 +90,8 @@ function removeTodoText() {
 }
 
 // Buttons action 
-function clearTodos(params) {
-	
+function clearTodos() {
+	todos = []
+	render()
+	saveToLocalStorage('todos', todos)
 }
