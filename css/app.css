@@ -24,6 +24,7 @@ h1 {
 
 .addTodo {
 	display: flex;
+	flex-wrap: wrap;
 	margin: 1rem 0;
 	width: 100%;
 	gap: 0.5rem;
@@ -36,9 +37,14 @@ h1 {
 
 .addTodo__input {
 	flex-grow: 1;
+	width: 100%;
 	padding: 0.5rem;
 	border: 1px solid rgba(0, 0, 0, 0.5);
 	border-radius: 0.3rem;
+}
+
+.addTodo__selectUser {
+	flex-grow: 1;
 }
 
 .addTodo__button {

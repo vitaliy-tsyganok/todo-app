@@ -1,8 +1,11 @@
 // Nodes
 const addTodoInputNode = document.querySelector('.addTodo__input')
 const addTodoButtonNode = document.querySelector('.addTodo__button')
+const addTodoSelectUserNode = document.querySelector('.addTodo__selectUser')
+
 
 let todos = getToLocalStorage('todos') || []
+renderUsers()
 render()
 
 // Events
@@ -55,6 +58,9 @@ function addTodo(todoText) {
 		todoText,
 		isDone: false,
 		id: `${Math.random()}`,
+		todoBody: {
+			userId: getTodoUserId()
+		}
 	}
 	todos = [...todos, todo]
 }
@@ -83,6 +89,10 @@ function getTodoId(elem) {
 
 function getTodoText() {
 	return addTodoInputNode.value.trim()
+}
+
+function getTodoUserId() {
+	return addTodoSelectUserNode.value.trim()
 }
 
 function removeTodoText() {
@@ -117,8 +127,6 @@ function downloadTasks() {
 				}
 			})
 			todos = [...todos, ...downloadedTodos]
-			console.log(downloadedTodos)
-			console.log(todos)
 			render()
 			saveToLocalStorage('todos', todos)
 		})
@@ -130,5 +138,20 @@ async function downloadTasksPromise() {
 	return downloadedTodos
 }
 
+function renderUsers() {
+	downloadUsersPromise()
+		.then(downloadedUsers => downloadedUsers.forEach(user => {
+			const option = document.createElement('option')
+			option.value = user.id
+			option.innerText = user.name
+			document.querySelector('.addTodo__selectUser').appendChild(option)
+			})
+		)
+}
 
+async function downloadUsersPromise() {
+	const data = await fetch('https://jsonplaceholder.typicode.com/users?_limit=7')
+	const downloadedUsers = await data.json()
+	return downloadedUsers
+}
 
