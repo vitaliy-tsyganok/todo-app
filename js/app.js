@@ -8,23 +8,16 @@ renderTodos()
 
 // Events
 addTodoFormNode.addEventListener('submit', addTodoFormNodeHandler)
-// addTodoFormNode.input.addEventListener('keydown', keydownEnter)
 
 // Handlers
 function addTodoFormNodeHandler(event) {
 	event.preventDefault()
-	// validateForm(addTodoFormNode)
 	const [todoText, todoUserId] = [getTodoText(), getTodoUserId()]
-	if (!todoText || !todoUserId) {
-		return alert('Please select user')
-	}
 	addTodo(todoText, todoUserId)
-	renderTodos()
 	removeTodoText()
 	addTodoFormNode.input.focus()
 	saveToLocalStorage('todos', todos)
 	saveToLocalStorage('users', users)
-	console.log(todos)
 }
 
 // Functions
@@ -39,7 +32,7 @@ function getToLocalStorage(key) {
 
 // Basic functions
 function renderUsers() {
-	let html = '<option value="">Select user</option>'
+	let html = '<option value="" disabled selected>Select user</option>'
 	downloadUsers()
 		.then(() => {
 			users.forEach((user) => {
@@ -47,20 +40,17 @@ function renderUsers() {
 			})
 		})
 		.then(() => {
-			console.log(users)
+			console.log('Users downloaded', users)
 			document.querySelector('.addTodo__selectUser').innerHTML = html
 		})
 }
 
 function renderTodos() {
 	let html = ''
-	// console.log('renderTodos', users)
 	todos.forEach((todo) => {
-		html += `<li class="${todo.isDone ? 'isDone' : ''}" data-id="${
-			todo.id
-		}"><div>${todo.todoText} <i>by ${
-			getUser(todo.todoBody.userId)?.name
-		}</i></div>
+		html += `<li class="${todo.isDone ? 'isDone' : ''}" data-front_id="${
+			todo.front_id
+		}"><div>${todo.todoText} <i>by ${getUser(todo.userId)?.name}</i></div>
 			<button onClick="setIsDone(this)">Done</button>
 			<button onClick="deleteTodo(this)">Delete</button>
 		</li>`
@@ -68,29 +58,30 @@ function renderTodos() {
 	document.querySelector('.todoList').innerHTML = html
 }
 
-function addTodo(todoText, userId) {
+async function addTodo(todoText, userId) {
 	const todo = {
 		todoText,
+		userId,
 		isDone: false,
-		id: `${Math.random()}`,
-		todoBody: {
-			userId,
-		},
+		front_id: `${Math.random()}`,
 	}
-	todos = [...todos, todo]
+	const newTodo = await createTodo(todo)
+	// todos = [...todos, newTodo]
+	changeTodos([...todos, newTodo])
+	renderTodos()
 }
 
 function deleteTodo(elem) {
-	const id = getTodoId(elem)
-	todos = todos.filter((todo) => todo.id !== id)
+	const front_id = getTodoFrontId(elem)
+	changeTodos(todos.filter((todo) => todo.front_id !== front_id))
 	renderTodos()
 	saveToLocalStorage('todos', todos)
 }
 
 function setIsDone(elem) {
-	const id = getTodoId(elem)
+	const front_id = getTodoFrontId(elem)
 	todos.forEach((todo) => {
-		if (todo.id === id) {
+		if (todo.front_id === front_id) {
 			todo.isDone = !todo.isDone
 		}
 	})
@@ -98,8 +89,8 @@ function setIsDone(elem) {
 	saveToLocalStorage('todos', todos)
 }
 
-function getTodoId(elem) {
-	return elem.parentNode.dataset.id
+function getTodoFrontId(elem) {
+	return elem.parentNode.dataset.front_id
 }
 
 function getTodoText() {
@@ -118,15 +109,23 @@ function removeTodoText() {
 	addTodoFormNode.input.value = ''
 }
 
+function changeTodos(changedTodos) {
+	todos = changedTodos
+}
+
+function changeUsers(changedUsers) {
+	users = changedUsers
+}
+
 // Buttons action
 function clearTodosAll() {
-	todos = []
+	changeTodos([])
 	renderTodos()
 	saveToLocalStorage('todos', todos)
 }
 
 function clearTodosDone() {
-	todos = todos.filter((todo) => !todo.isDone)
+	changeTodos(todos.filter((todo) => !todo.isDone))
 	renderTodos()
 	saveToLocalStorage('todos', todos)
 }
@@ -136,15 +135,13 @@ function downloadTasks() {
 		;[...downloadedTodos] = downloadedTodos.map((todo) => {
 			const { completed: isDone, title: todoText } = todo
 			return {
-				id: `${Math.random()}`,
+				...todo,
+				front_id: `${Math.random()}`,
 				isDone,
 				todoText,
-				todoBody: {
-					...todo,
-				},
 			}
 		})
-		todos = [...todos, ...downloadedTodos]
+		changeTodos([...todos, ...downloadedTodos])
 		renderTodos()
 		saveToLocalStorage('todos', todos)
 	})
@@ -163,5 +160,18 @@ async function downloadUsers() {
 		'https://jsonplaceholder.typicode.com/users?_limit=7'
 	)
 	const downloadedUsers = await data.json()
-	users = [...downloadedUsers]
+	changeUsers([...downloadedUsers])
+}
+
+async function createTodo(todo) {
+	const response = await fetch('https://jsonplaceholder.typicode.com/todos', {
+		method: 'POST',
+		body: JSON.stringify(todo),
+		headers: {
+			'Content-type': 'application/json; charset=UTF-8',
+		},
+	})
+	const newTodo = await response.json()
+	console.log(newTodo)
+	return newTodo
 }
