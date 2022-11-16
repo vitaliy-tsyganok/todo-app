@@ -14,11 +14,11 @@
 		<div id="root">
 			<h1>Todo app</h1>
 			<form class="addTodo">
-				<input class="addTodo__input" type="text" placeholder="New todo" name="input" required />
-				<select class="addTodo__selectUser" placeholder="Select user" name="selectUser"  required>
+				<input class="addTodo__input" type="text" placeholder="New todo" name="input" tabindex="1" required />
+				<select class="addTodo__selectUser" placeholder="Select user" name="selectUser" tabindex="2" required>
 					<!-- <option disabled>Select user</option> -->
 				</select>
-				<button class="addTodo__button button" name="button">Add todo</button>
+				<button class="addTodo__button button" name="button" tabindex="3">Add todo</button>
 			</form>
 			<div class="actions">
 				<button class="actions__downloadTasks button" onclick="downloadTasks()">Download tasks</button>

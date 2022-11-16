@@ -2,7 +2,7 @@
 const addTodoFormNode = document.querySelector('.addTodo')
 
 let todos = getToLocalStorage('todos') || []
-let users = []
+let users = getToLocalStorage('users') || []
 renderUsers()
 renderTodos()
 
@@ -22,21 +22,11 @@ function addTodoFormNodeHandler(event) {
 	addTodo(todoText, todoUserId)
 	renderTodos()
 	removeTodoText()
+	addTodoFormNode.input.focus()
 	saveToLocalStorage('todos', todos)
+	saveToLocalStorage('users', users)
 	console.log(todos)
 }
-
-// function keydownEnter(event) {
-// 	if (event.key === 'Enter') {
-// 		addTodoFormNodeHandler()
-// 	}
-// }
-
-// function validateForm(form) {
-// 	Array.from(form).forEach(el => {
-// 		console.log(el)
-// 	})
-// }
 
 // Functions
 // Local storage
@@ -51,22 +41,24 @@ function getToLocalStorage(key) {
 // Basic functions
 function renderUsers() {
 	let html = '<option value="">Select user</option>'
-	downloadUsersPromise()
-		.then(downloadedUsers => {
-			users = [...downloadedUsers]
-			downloadedUsers.forEach(user => {
+	downloadUsers()
+		.then(() => {
+			users.forEach(user => {
 				html += `<option value="${user.id}">${user.name}</option>`
 			})
 		})
-		.then(() =>
+		.then(() => {
+			console.log(users)
 			document.querySelector('.addTodo__selectUser').innerHTML = html
+		}
 		)
 }
 
 function renderTodos() {
 	let html = ''
+	// console.log('renderTodos', users)
 	todos.forEach((todo) => {
-		html += `<li class="${todo.isDone ? 'isDone' : ''}" data-id="${todo.id}"><div>${todo.todoText}</div>
+		html += `<li class="${todo.isDone ? 'isDone' : ''}" data-id="${todo.id}"><div>${todo.todoText} <i>by ${getUser(todo.todoBody.userId)?.name}</i></div>
 			<button onClick="setIsDone(this)">Done</button>
 			<button onClick="deleteTodo(this)">Delete</button>
 		</li>`
@@ -75,9 +67,6 @@ function renderTodos() {
 }
 
 function addTodo(todoText, userId) {
-	// if (!todoText) {
-	// 	return
-	// }
 	const todo = {
 		todoText,
 		isDone: false,
@@ -117,6 +106,10 @@ function getTodoText() {
 
 function getTodoUserId() {
 	return Number(addTodoFormNode.selectUser.value)
+}
+
+function getUser(userId) {
+	return users.find(user => user.id === userId)
 }
 
 function removeTodoText() {
@@ -162,8 +155,8 @@ async function downloadTasksPromise() {
 	return downloadedTodos
 }
 
-async function downloadUsersPromise() {
+async function downloadUsers() {
 	const data = await fetch('https://jsonplaceholder.typicode.com/users?_limit=7')
-	const downloadedUsers = await data.json()
-	return downloadedUsers
+	const downloadedUsers = await data.json()	
+	users = [...downloadedUsers]
 }
