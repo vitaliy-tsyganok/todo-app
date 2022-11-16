@@ -66,7 +66,6 @@ async function addTodo(todoText, userId) {
 		front_id: `${Math.random()}`,
 	}
 	const newTodo = await createTodo(todo)
-	// todos = [...todos, newTodo]
 	changeTodos([...todos, newTodo])
 	renderTodos()
 }
